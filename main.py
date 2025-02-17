@@ -295,12 +295,27 @@ elif st.session_state.page == "site management":
         wp_password = st.text_input("Application Password", type="password")
 
         if st.button("Save WordPress Configuration"):
-            st.session_state.site_config[site_name].update({
-                'wp_url': wp_url,
-                'wp_username': wp_username,
-                'wp_password': wp_password if wp_password else st.session_state.site_config[site_name].get('wp_password', '')
-            })
-            st.success("WordPress configuration saved!")
+            try:
+                # Create and verify WordPress API instance
+                new_wp_api = WordPressAPI(
+                    wp_url,
+                    wp_username,
+                    wp_password if wp_password else st.session_state.site_config[site_name].get('wp_password', '')
+                )
+                
+                # If verification successful, update config
+                st.session_state.site_config[site_name].update({
+                    'wp_url': wp_url,
+                    'wp_username': wp_username,
+                    'wp_password': wp_password if wp_password else st.session_state.site_config[site_name].get('wp_password', '')
+                })
+                
+                # Store verified API instance
+                st.session_state.wordpress_api = new_wp_api
+                
+                st.success("✅ WordPress configuration saved and verified!")
+            except Exception as e:
+                st.error(f"❌ Error saving WordPress configuration: {str(e)}")
 
         # RSS Feed Configuration
         st.header("RSS Feed Configuration")
