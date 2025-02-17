@@ -349,13 +349,22 @@ elif st.session_state.page == "bulk article generator":
                             content_str = st.session_state.content_generator.generate_hindi_content(article)
                             content = json.loads(content_str)
 
+                            # Check if WordPress config exists
+                            if not all(key in config for key in ['wp_url', 'wp_username', 'wp_password']):
+                                st.error("Please configure WordPress settings in Site Management first")
+                                continue
+
                             # Initialize WordPress API if needed
-                            if not st.session_state.wordpress_api:
-                                st.session_state.wordpress_api = WordPressAPI(
-                                    config['wp_url'],
-                                    config['wp_username'],
-                                    config['wp_password']
-                                )
+                            try:
+                                if not st.session_state.wordpress_api:
+                                    st.session_state.wordpress_api = WordPressAPI(
+                                        config['wp_url'],
+                                        config['wp_username'],
+                                        config['wp_password']
+                                    )
+                            except Exception as e:
+                                st.error(f"WordPress connection error: {str(e)}")
+                                continue
 
                             # Post to WordPress
                             try:
