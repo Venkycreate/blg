@@ -8,7 +8,54 @@ class ContentGenerator:
         # the newest OpenAI model is "gpt-4o" which was released May 13, 2024
         self.model = "gpt-4o"
 
-    def generate_content(self, source_content: Dict, keywords: List[str]) -> Dict:
+    def generate_hindi_content(self, source_content: Dict, keywords: List[str] = None) -> Dict:
+        """Generate Hindi content from source material"""
+        try:
+            # Auto-generate focus keyword if none provided
+            if not keywords:
+                analysis_prompt = f"Analyze this content and suggest the most relevant Hindi keywords:\n{source_content['content']}"
+                keyword_response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": analysis_prompt}]
+                )
+                keywords = [keyword_response.choices[0].message.content.strip()]
+
+            prompt = f"""
+            Create a unique Hindi blog post based on this content:
+            Title: {source_content['title']}
+            Source Content: {source_content['content']}
+            Focus Keyword: {keywords[0]}
+            
+            Requirements:
+            1. Write entirely in Hindi (use English for technical terms if needed)
+            2. Minimum 300 words
+            3. SEO optimized with proper keyword density
+            4. Include proper HTML formatting with headings
+            5. Generate SEO meta tags in Hindi
+            
+            Format the response as a JSON with:
+            {{
+                "title": "Hindi SEO title with keywords",
+                "content": "Well-structured Hindi blog post",
+                "meta_description": "Hindi meta description with keywords",
+                "meta_keywords": "Hindi keywords",
+                "slug": "english-url-friendly-slug",
+                "estimated_keyword_density": "percentage"
+            }}
+            """
+
+            response = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            return response.choices[0].message.content
+
+        except Exception as e:
+            raise Exception(f"Error generating Hindi content: {str(e)}")
+
+    def generate_content(self, source_content: Dict, keywords: List[str] = None) -> Dict:
         """Generate unique content from source material"""
         try:
             # Auto-generate focus keyword if none provided
