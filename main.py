@@ -3,8 +3,10 @@ import json
 from utils.feed_parser import FeedParser
 import os
 
-# Configure Streamlit to listen on 0.0.0.0
+# Configure Streamlit
 os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
+os.environ['STREAMLIT_SERVER_PORT'] = '8080'
+os.environ['STREAMLIT_SERVER_HEADLESS'] = 'true'
 from utils.content_generator import ContentGenerator
 from utils.wordpress_api import WordPressAPI
 from utils.seo_optimizer import SEOOptimizer
