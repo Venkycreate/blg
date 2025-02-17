@@ -23,10 +23,22 @@ class FeedParser:
 
         try:
             feed = feedparser.parse(url)
+            
+            # Check content type and version
+            if hasattr(feed, 'headers'):
+                content_type = feed.headers.get('content-type', '').lower()
+                if 'xml' not in content_type and 'rss' not in content_type and 'atom' not in content_type:
+                    raise Exception(f"Invalid feed type: {content_type}. URL must point to an RSS/XML feed, not a webpage.")
 
             # Check if feed parsing was successful
             if feed.bozo and feed.bozo_exception:
+                if 'SAX' in str(feed.bozo_exception):
+                    raise Exception("Invalid RSS feed format. Please ensure the URL points to an RSS feed, not the website's homepage.")
                 raise Exception(f"Feed parsing error: {str(feed.bozo_exception)}")
+
+            # Check feed version
+            if not hasattr(feed, 'version') or not feed.version:
+                raise Exception("Could not detect RSS feed version. Please verify this is a valid RSS feed URL.")
 
             # Verify feed has entries
             if not hasattr(feed, 'entries') or not feed.entries:
