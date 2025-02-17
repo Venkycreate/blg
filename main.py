@@ -346,7 +346,8 @@ elif st.session_state.page == "bulk article generator":
                     with st.spinner("Generating Hindi content..."):
                         for idx in selected_articles:
                             article = st.session_state.articles[idx]
-                            content = st.session_state.content_generator.generate_hindi_content(article)
+                            content_str = st.session_state.content_generator.generate_hindi_content(article)
+                            content = json.loads(content_str)
 
                             # Initialize WordPress API if needed
                             if not st.session_state.wordpress_api:
@@ -361,4 +362,4 @@ elif st.session_state.page == "bulk article generator":
                                 post = st.session_state.wordpress_api.create_post(content)
                                 st.success(f"Published: {content['title']}")
                             except Exception as e:
-                                st.error(f"Error publishing {content['title']}: {str(e)}")
+                                st.error(f"Error publishing article: {str(e)}")
