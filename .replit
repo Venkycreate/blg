@@ -2,3 +2,22 @@ modules = ["python-3.11"]
 
 [nix]
 channel = "stable-24_05"
+
+[workflows]
+runButton = "Streamlit"
+
+[[workflows.workflow]]
+name = "Run"
+author = 39634571
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "streamlit run main.py"
+
+[[workflows.workflow]]
+name = "Streamlit"
+author = 39634571
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "streamlit run main.py"
