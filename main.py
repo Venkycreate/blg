@@ -1,6 +1,10 @@
 import streamlit as st
 import json
 from utils.feed_parser import FeedParser
+import os
+
+# Configure Streamlit to listen on 0.0.0.0
+os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
 from utils.content_generator import ContentGenerator
 from utils.wordpress_api import WordPressAPI
 from utils.seo_optimizer import SEOOptimizer
