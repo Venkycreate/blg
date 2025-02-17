@@ -5,8 +5,6 @@ import os
 
 # Configure Streamlit
 import streamlit.web.bootstrap
-if streamlit.runtime.exists():
-    streamlit.runtime.get_instance().logger.set_mode('off')
 from utils.content_generator import ContentGenerator
 from utils.wordpress_api import WordPressAPI
 from utils.seo_optimizer import SEOOptimizer
