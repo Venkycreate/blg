@@ -4,9 +4,9 @@ from utils.feed_parser import FeedParser
 import os
 
 # Configure Streamlit
-os.environ['STREAMLIT_SERVER_ADDRESS'] = '0.0.0.0'
-os.environ['STREAMLIT_SERVER_PORT'] = '8080'
-os.environ['STREAMLIT_SERVER_HEADLESS'] = 'true'
+import streamlit.web.bootstrap
+if streamlit.runtime.exists():
+    streamlit.runtime.get_instance().logger.set_mode('off')
 from utils.content_generator import ContentGenerator
 from utils.wordpress_api import WordPressAPI
 from utils.seo_optimizer import SEOOptimizer
