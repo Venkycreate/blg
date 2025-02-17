@@ -19,13 +19,24 @@ class ContentGenerator:
 
             Please format the response as a JSON object with the following structure:
             {{
-                "title": "SEO optimized title",
-                "content": "Generated blog post content with proper formatting",
-                "meta_description": "SEO meta description",
-                "keywords": "Comma-separated keywords used"
+                "title": "SEO optimized title with number and power word",
+                "content": "Well-structured blog post (minimum 600 words) with:
+                          - Focus keyword in first paragraph
+                          - Multiple H2/H3 headings with keywords
+                          - Short paragraphs
+                          - Internal and external links
+                          - Image placeholders with alt text",
+                "meta_description": "SEO meta description with focus keyword",
+                "keywords": "Comma-separated keywords used",
+                "slug": "URL-friendly-slug-with-focus-keyword"
             }}
 
-            Ensure the content is unique, engaging, and optimized for SEO.
+            Ensure the content is:
+            1. Minimum 600 words
+            2. Has focus keyword in title, meta description, and content
+            3. Includes proper heading structure (H2, H3)
+            4. Contains both internal and external links
+            5. Has image placeholders with keyword-optimized alt text
             """
 
             response = self.client.chat.completions.create(
