@@ -11,24 +11,49 @@ class ContentGenerator:
     def generate_content(self, source_content: Dict, keywords: List[str]) -> Dict:
         """Generate unique content from source material"""
         try:
+            # Auto-generate focus keyword if none provided
+            if not keywords:
+                analysis_prompt = f"Analyze this content and suggest the most relevant focus keyword:\n{source_content['content']}"
+                keyword_response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": analysis_prompt}]
+                )
+                keywords = [keyword_response.choices[0].message.content.strip()]
+
             prompt = f"""
-            Create a unique blog post based on this content:
+            Create an SEO-optimized blog post based on this content:
             Title: {source_content['title']}
             Source Content: {source_content['content']}
-            Keywords to include: {', '.join(keywords)}
-
+            Focus Keyword: {keywords[0]}
+            
+            Follow these SEO requirements strictly:
+            1. Title must:
+               - Include focus keyword near the beginning
+               - Contain a number (e.g., "5 Ways...", "7 Tips...")
+               - Include a power word (e.g., amazing, exclusive, proven)
+               - Include a sentiment word (e.g., best, great)
+               
+            2. Content must:
+               - Be minimum 600 words
+               - Include focus keyword in first paragraph
+               - Have 1% keyword density
+               - Include focus keyword in H2/H3 subheadings
+               - Use short paragraphs
+               - Include table of contents
+               - Include both internal and external dofollow links
+               - Include images with focus keyword in alt text
+               
+            3. Meta description must include focus keyword
+            4. URL slug must include focus keyword and be concise
+            
             Please format the response as a JSON object with the following structure:
             {{
-                "title": "SEO optimized title with number and power word",
-                "content": "Well-structured blog post (minimum 600 words) with:
-                          - Focus keyword in first paragraph
-                          - Multiple H2/H3 headings with keywords
-                          - Short paragraphs
-                          - Internal and external links
-                          - Image placeholders with alt text",
-                "meta_description": "SEO meta description with focus keyword",
-                "keywords": "Comma-separated keywords used",
-                "slug": "URL-friendly-slug-with-focus-keyword"
+                "title": "SEO optimized title meeting all requirements",
+                "content": "Well-structured blog post with table of contents, headings, links, and images",
+                "meta_description": "SEO-optimized meta description with focus keyword",
+                "keywords": "focus-keyword, related-keywords",
+                "slug": "seo-friendly-url-with-keyword",
+                "estimated_keyword_density": "percentage"
             }}
 
             Ensure the content is:
